@@ -9,7 +9,7 @@ export default function Explore() {
           justifyContent: "center",
         }}
       >
-        <Text>slur</Text>
+        <Text>something fun!</Text>
       </View>
     </>
   );

@@ -34,9 +34,10 @@ export default function HomeScreen() {
           maximumValue={1}
           minimumTrackTintColor="#8a8a8a"
           maximumTrackTintColor="#dcdcdc"
-          thumbImage={require("../../assets/images/react-logo.png")}
+          thumbImage={require("../../assets/images/thumbicon.png")}
         />
       </View>
+      <View style={{}}></View>
     </>
   );
 }

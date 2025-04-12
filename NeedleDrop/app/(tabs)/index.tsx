@@ -6,7 +6,7 @@ export default function HomeScreen() {
     <>
       <View
         style={{
-          flex: 2,
+          flex: 1,
           justifyContent: "center",
           alignItems: "center",
           gap: 20,
@@ -18,7 +18,7 @@ export default function HomeScreen() {
             borderWidth: 1,
             borderRadius: 10,
             width: "75%",
-            height: "75%",
+            height: "40%",
           }}
         ></Image>
         <Text
@@ -28,8 +28,15 @@ export default function HomeScreen() {
         >
           Song Name
         </Text>
+        <Slider
+          style={{ width: 200, height: 40 }}
+          minimumValue={0}
+          maximumValue={1}
+          minimumTrackTintColor="#8a8a8a"
+          maximumTrackTintColor="#dcdcdc"
+          thumbImage={require("../../assets/images/react-logo.png")}
+        />
       </View>
-      <View style={{ flex: 1 }}></View>
     </>
   );
 }

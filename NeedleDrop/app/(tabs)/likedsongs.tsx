@@ -6,7 +6,7 @@ import { Menu, Provider } from "react-native-paper";
 import { Song } from ".";
 import { useFocusEffect } from "expo-router";
 
-type ItemProps = { title: string; artist: string };
+type ItemProps = { title: string; artist: string; imageurl: string };
 
 function Item(props: ItemProps) {
   let [visible, setVisible] = useState(false);
@@ -15,7 +15,7 @@ function Item(props: ItemProps) {
     <View style={styles.item}>
       <View>
         <Image
-          source={require("../../assets/images/needledrop_icon.png")}
+          source={{ uri: props.imageurl }}
           style={{
             resizeMode: "contain",
             width: 40,
@@ -79,7 +79,11 @@ export default function LikedSongsPage() {
         <FlatList
           data={likedSongs}
           renderItem={({ item }) => (
-            <Item title={item.title} artist={item.artist} />
+            <Item
+              title={item.title}
+              artist={item.artist}
+              imageurl={item.path}
+            />
           )}
           keyExtractor={(item) => item.id}
         />

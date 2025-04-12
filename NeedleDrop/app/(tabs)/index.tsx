@@ -1,9 +1,10 @@
 import { View, Image, Text, Button, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ImageColors from "react-native-image-colors";
 import {
   Gesture,
   GestureDetector,
@@ -27,8 +28,44 @@ export const likedSongs: Song[] = [];
 export default function HomeScreen() {
   let [curSongIndex, setCurSongIndex] = useState(0);
   let [paused, setPaused] = useState(false);
+  let [bgColor, setBgColor] = useState("#FFFFFF");
 
   const translateX = useSharedValue(0);
+
+  const testColor = async () => {
+    const uri =
+      "https://e.snmc.io/i/600/s/e2a2db773ad2fa176540615da15bebda/11194507/travis-scott-meltdown-Cover-Art.jpg"; // Replace with a valid image URL
+    const color = await getAverageColor(uri);
+    console.log("Average Color:", color);
+  };
+
+  const getAverageColor = async (uri: string) => {
+    const result = await ImageColors.getColors(uri, {
+      fallback: "#ffffff",
+      cache: true,
+      key: uri,
+    });
+
+    switch (result.platform) {
+      case "android":
+        return result.dominant;
+      case "ios":
+        return result.background;
+      default:
+        return "#ffffff";
+    }
+  };
+
+  useEffect(() => {
+    // getAverageColor(songs[curSongIndex].path)
+    //   .then((value) => {
+    //     if (value != null) {
+    //       setBgColor(value);
+    //     }
+    //   })
+    //   .catch(console.warn);
+    testColor();
+  }, [curSongIndex]);
 
   const likeSong = () => {
     let unique = true;
@@ -55,19 +92,19 @@ export default function HomeScreen() {
       id: "1",
       title: "React Logo!",
       artist: "idk lol",
-      image: require("../../assets/images/react-logo.png"),
+      path: "https://e.snmc.io/i/600/s/e2a2db773ad2fa176540615da15bebda/11194507/travis-scott-meltdown-Cover-Art.jpg",
     },
     {
       id: "2",
       title: "nothing!",
       artist: "nobody",
-      image: require("../../assets/images/icon.png"),
+      path: "../../assets/images/icon.png",
     },
     {
       id: "3",
       title: "NeedleDrop!",
       artist: "Sam!",
-      image: require("../../assets/images/needledrop_icon.png"),
+      path: "../../assets/images/needledrop_icon.png",
     },
   ];
 
@@ -104,7 +141,7 @@ export default function HomeScreen() {
       >
         <GestureDetector gesture={swipeGesture}>
           <Animated.Image
-            source={songs[curSongIndex].image}
+            source={{ uri: songs[curSongIndex].path }}
             style={{
               borderWidth: 1,
               borderRadius: 10,
@@ -121,6 +158,7 @@ export default function HomeScreen() {
           justifyContent: "flex-start",
           alignItems: "center",
           paddingBottom: 20,
+          backgroundColor: bgColor,
         }}
       >
         <Text

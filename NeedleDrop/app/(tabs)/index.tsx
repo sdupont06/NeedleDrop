@@ -1,6 +1,7 @@
 import { View, Image, Text, Button, TouchableOpacity } from "react-native";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
+import { getPixelRGBA } from "react-native-get-pixel";
 
 export default function HomeScreen() {
   return (

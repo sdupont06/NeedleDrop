@@ -15,6 +15,7 @@ import Animated, {
 
 export default function HomeScreen() {
   let [curImageIndex, setCurImageIndex] = useState(0);
+  let [paused, setPaused] = useState(false);
 
   const translateX = useSharedValue(0);
 
@@ -113,6 +114,7 @@ export default function HomeScreen() {
         >
           <Ionicons name="close-outline" size={30} color="darkgreen"></Ionicons>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={{
             backgroundColor: "darkgray",
@@ -120,8 +122,13 @@ export default function HomeScreen() {
             borderRadius: 50,
             padding: 10,
           }}
+          onPress={() => setPaused(!paused)}
         >
-          <Ionicons name="pause-outline" size={40} color="darkgreen"></Ionicons>
+          <Ionicons
+            name={paused ? "pause-outline" : "play-outline"}
+            size={40}
+            color="darkgreen"
+          ></Ionicons>
         </TouchableOpacity>
         <TouchableOpacity
           style={{

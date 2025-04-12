@@ -12,8 +12,9 @@ import Animated, {
   withSpring,
   runOnJS,
 } from "react-native-reanimated";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: { navigation: NativeStackNavigationProp<any> }) {
   let [curImageIndex, setCurImageIndex] = useState(0);
   let [paused, setPaused] = useState(false);
 
@@ -83,9 +84,9 @@ export default function HomeScreen() {
             fontSize: 24,
           }}
         >
-          slut me out 3
+          Slut Me Out 3
         </Text>
-        <Text>nle choppa</Text>
+        <Text>NLE Choppa</Text>
         <Slider
           style={{ width: "75%", height: "10%" }}
           minimumValue={0}

@@ -48,6 +48,7 @@ export default function HomeScreen() {
   return (
     <>
       <GestureHandlerRootView
+
         style={{
           flex: 5,
           justifyContent: "center",
@@ -114,7 +115,6 @@ export default function HomeScreen() {
         >
           <Ionicons name="close-outline" size={30} color="darkgreen"></Ionicons>
         </TouchableOpacity>
-
         <TouchableOpacity
           style={{
             backgroundColor: "darkgray",

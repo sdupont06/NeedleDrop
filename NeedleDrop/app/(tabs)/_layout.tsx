@@ -40,9 +40,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: "wow",
+          title: "Liked Songs",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="trash" size={25} color={color} />
+            <Ionicons name="heart-outline" size={25} color={color} />
           ),
         }}
       />

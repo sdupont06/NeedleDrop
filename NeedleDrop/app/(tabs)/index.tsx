@@ -1,11 +1,12 @@
 import { View, Image, Text } from "react-native";
+import Slider from "@react-native-community/slider";
 
 export default function HomeScreen() {
   return (
     <>
       <View
         style={{
-          flex: 1,
+          flex: 2,
           justifyContent: "center",
           alignItems: "center",
           gap: 20,
@@ -16,6 +17,8 @@ export default function HomeScreen() {
           style={{
             borderWidth: 1,
             borderRadius: 10,
+            width: "75%",
+            height: "75%",
           }}
         ></Image>
         <Text
@@ -26,6 +29,7 @@ export default function HomeScreen() {
           Song Name
         </Text>
       </View>
+      <View style={{ flex: 1 }}></View>
     </>
   );
 }

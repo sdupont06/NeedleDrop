@@ -16,7 +16,9 @@ import {
 const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
 
 const REDIRECT_URI = makeRedirectUri({
-  scheme: "yourapp",
+  scheme: "NeedleDrop",
+  preferLocalhost: true,
+  // path: "(tabs)",
 });
 
 const SCOPES = [
@@ -39,7 +41,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
     {
       clientId: CLIENT_ID,
       scopes: SCOPES,
-      redirectUri: REDIRECT_URI,
+      redirectUri: "http://127.0.0.1:8081",
       responseType: ResponseType.Token,
     },
     discovery

@@ -2,6 +2,7 @@ import { View, Image, Text, Button, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet } from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -22,10 +23,10 @@ export default function HomeScreen() {
   const images = [
     require("../../assets/images/react-logo.png"),
     require("../../assets/images/icon.png"),
+    require("../../assets/images/needledrop_icon.png"),
   ];
 
   const nextImage = () => {
-    console.log(curImageIndex);
     setCurImageIndex((curImageIndex + 1) % images.length);
   };
 
@@ -48,7 +49,6 @@ export default function HomeScreen() {
   return (
     <>
       <GestureHandlerRootView
-
         style={{
           flex: 5,
           justifyContent: "center",
@@ -104,45 +104,40 @@ export default function HomeScreen() {
           gap: "20%",
         }}
       >
-        <TouchableOpacity
-          style={{
-            backgroundColor: "darkgray",
-            borderWidth: 1,
-            borderRadius: 50,
-            padding: 10,
-            alignSelf: "center",
-          }}
-        >
-          <Ionicons name="close-outline" size={30} color="darkgreen"></Ionicons>
+        <TouchableOpacity style={styles.sideActionButtons}>
+          <Ionicons name="close-outline" size={30} color="#74B4AD"></Ionicons>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{
-            backgroundColor: "darkgray",
-            borderWidth: 1,
-            borderRadius: 50,
-            padding: 10,
-          }}
+          style={styles.pauseButton}
           onPress={() => setPaused(!paused)}
         >
           <Ionicons
-            name={paused ? "pause-outline" : "play-outline"}
+            name={paused ? "pause-outline" : "play"}
             size={40}
-            color="darkgreen"
+            color="#513D30"
           ></Ionicons>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            backgroundColor: "darkgray",
-            borderWidth: 1,
-            borderRadius: 50,
-            padding: 10,
-            alignSelf: "center",
-          }}
-        >
-          <Ionicons name="heart-outline" size={30} color="darkgreen"></Ionicons>
+        <TouchableOpacity style={styles.sideActionButtons}>
+          <Ionicons name="heart-outline" size={30} color="#D2695E"></Ionicons>
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1 }}></View>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  pauseButton: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderRadius: 50,
+    padding: 10,
+  },
+  sideActionButtons: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderRadius: 50,
+    padding: 10,
+    alignSelf: "center",
+  },
+});

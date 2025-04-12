@@ -3,7 +3,6 @@ import React from "react";
 import { Platform } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -34,6 +33,16 @@ export default function TabLayout() {
           title: "My Music",
           tabBarIcon: ({ color }) => (
             <Ionicons name="disc-outline" size={25} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="explore"
+        options={{
+          title: "wow",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="trash" size={25} color={color} />
           ),
         }}
       />

@@ -11,8 +11,6 @@ const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 require('dotenv').config();
 
 // Spotify API Credentials
-
-// f8bdc778be784e4a919f318a864d1ff5
 async function getCreds(){
     const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
     const CLIENT_SECRET = await getInput("What is the key?: ");

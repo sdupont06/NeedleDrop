@@ -1,25 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, FlatList, StyleSheet, Text, Image } from "react-native";
 import { Menu, Provider } from "react-native-paper";
-
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-    artist: "artist",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-    artist: "artist",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-    artist: "artist",
-  },
-];
+import { Song } from ".";
+import { useFocusEffect } from "expo-router";
 
 type ItemProps = { title: string; artist: string };
 
@@ -33,8 +18,8 @@ function Item(props: ItemProps) {
           source={require("../../assets/images/needledrop_icon.png")}
           style={{
             resizeMode: "contain",
-            width: 50,
-            height: 50,
+            width: 40,
+            height: 40,
           }}
         />
       </View>
@@ -70,11 +55,29 @@ function Item(props: ItemProps) {
 }
 
 export default function LikedSongsPage() {
+  let [likedSongs, setLikedSongs] = useState<Song[]>([]);
+
+  const getLikedSongs = async () => {
+    console.log("retrieving songs");
+    const value = await AsyncStorage.getItem("likedSongs").catch((e) => {
+      console.log(e);
+    });
+    if (value != null) {
+      setLikedSongs(JSON.parse(value));
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getLikedSongs();
+    }, [])
+  );
+
   return (
     <Provider>
       <View style={styles.container}>
         <FlatList
-          data={DATA}
+          data={likedSongs}
           renderItem={({ item }) => (
             <Item title={item.title} artist={item.artist} />
           )}
@@ -88,11 +91,12 @@ export default function LikedSongsPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 60,
   },
   item: {
     flexDirection: "row",
     backgroundColor: "#74B4AD",
+    alignItems: "center",
     padding: 10,
     marginVertical: 1,
     marginHorizontal: 16,
@@ -100,9 +104,9 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   songname: {
-    fontSize: 24,
+    fontSize: 20,
   },
   artistname: {
-    fontSize: 16,
+    fontSize: 14,
   },
 });

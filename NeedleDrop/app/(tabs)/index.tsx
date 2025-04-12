@@ -3,6 +3,7 @@ import { useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Gesture,
   GestureDetector,
@@ -14,11 +15,39 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 
+export interface Song {
+  id: string;
+  title: string;
+  artist: string;
+}
+
+export const likedSongs: Song[] = [];
+
 export default function HomeScreen() {
-  let [curImageIndex, setCurImageIndex] = useState(0);
+  let [curSongIndex, setCurSongIndex] = useState(0);
   let [paused, setPaused] = useState(false);
 
   const translateX = useSharedValue(0);
+
+  const likeSong = () => {
+    let unique = true;
+    likedSongs.forEach((item) => {
+      if (item.id === songs[curSongIndex].id) {
+        unique = false;
+      }
+    });
+    if (unique) {
+      likedSongs.unshift(songs[curSongIndex]);
+      saveLikedSongs();
+    }
+  };
+
+  const saveLikedSongs = async () => {
+    await AsyncStorage.setItem("likedSongs", JSON.stringify(likedSongs)).catch(
+      (e) => console.log(e)
+    );
+    // await AsyncStorage.setItem("likedSongs", "");
+  };
 
   const images = [
     require("../../assets/images/react-logo.png"),
@@ -26,8 +55,26 @@ export default function HomeScreen() {
     require("../../assets/images/needledrop_icon.png"),
   ];
 
-  const nextImage = () => {
-    setCurImageIndex((curImageIndex + 1) % images.length);
+  const songs = [
+    {
+      id: "1",
+      title: "React Logo!",
+      artist: "idk lol",
+    },
+    {
+      id: "2",
+      title: "nothing!",
+      artist: "nobody",
+    },
+    {
+      id: "3",
+      title: "NeedleDrop!",
+      artist: "Sam!",
+    },
+  ];
+
+  const nextSong = () => {
+    setCurSongIndex((curSongIndex + 1) % songs.length);
   };
 
   const swipeGesture = Gesture.Pan()
@@ -36,12 +83,12 @@ export default function HomeScreen() {
     })
     .onEnd((event) => {
       if (event.translationX > 100) {
+        runOnJS(likeSong)();
         translateX.value = -500;
-        runOnJS(nextImage)();
+        runOnJS(nextSong)();
       } else if (event.translationX < -100) {
         translateX.value = 500;
-        runOnJS(nextImage)();
-        console.log(curImageIndex);
+        runOnJS(nextSong)();
       }
       translateX.value = withSpring(0);
     });
@@ -59,7 +106,7 @@ export default function HomeScreen() {
       >
         <GestureDetector gesture={swipeGesture}>
           <Animated.Image
-            source={images[curImageIndex]}
+            source={images[curSongIndex]}
             style={{
               borderWidth: 1,
               borderRadius: 10,
@@ -83,9 +130,9 @@ export default function HomeScreen() {
             fontSize: 24,
           }}
         >
-          slut me out 3
+          {songs[curSongIndex].title}
         </Text>
-        <Text>nle choppa</Text>
+        <Text>{songs[curSongIndex].artist}</Text>
         <Slider
           style={{ width: "75%", height: "10%" }}
           minimumValue={0}

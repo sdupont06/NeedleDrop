@@ -2,8 +2,11 @@ import { View, Text } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <View>
-      <Text>PENIS</Text>
-    </View>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+      }}
+    ></View>
   );
 }

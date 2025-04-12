@@ -1,7 +1,9 @@
 //  Basic Setup and Utilities
 const fetch = require('node-fetch');
 
+// ASSUME USER TOKEN IS RETRIEVED
 const accessToken = 'YOUR_SPOTIFY_ACCESS_TOKEN'; // Replace with a real OAuth token
+
 
 // Reusable headers
 const headers = {

@@ -19,6 +19,7 @@ export interface Song {
   id: string;
   title: string;
   artist: string;
+  path: string;
 }
 
 export const likedSongs: Song[] = [];
@@ -49,27 +50,24 @@ export default function HomeScreen() {
     // await AsyncStorage.setItem("likedSongs", "");
   };
 
-  const images = [
-    require("../../assets/images/react-logo.png"),
-    require("../../assets/images/icon.png"),
-    require("../../assets/images/needledrop_icon.png"),
-  ];
-
   const songs = [
     {
       id: "1",
       title: "React Logo!",
       artist: "idk lol",
+      image: require("../../assets/images/react-logo.png"),
     },
     {
       id: "2",
       title: "nothing!",
       artist: "nobody",
+      image: require("../../assets/images/icon.png"),
     },
     {
       id: "3",
       title: "NeedleDrop!",
       artist: "Sam!",
+      image: require("../../assets/images/needledrop_icon.png"),
     },
   ];
 
@@ -106,7 +104,7 @@ export default function HomeScreen() {
       >
         <GestureDetector gesture={swipeGesture}>
           <Animated.Image
-            source={images[curSongIndex]}
+            source={songs[curSongIndex].image}
             style={{
               borderWidth: 1,
               borderRadius: 10,

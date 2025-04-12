@@ -11,6 +11,7 @@ export default function HomeScreen() {
           justifyContent: "center",
           alignItems: "center",
           gap: 10,
+          paddingTop: 50,
         }}
       >
         <Image

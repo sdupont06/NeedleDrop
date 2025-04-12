@@ -1,8 +1,9 @@
 import { View, Image, Text, Button, TouchableOpacity } from "react-native";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: { navigation: NativeStackNavigationProp<any> }) {
   return (
     <>
       <View
@@ -27,9 +28,9 @@ export default function HomeScreen() {
             fontSize: 24,
           }}
         >
-          slut me out 3
+          Slut Me Out 3
         </Text>
-        <Text>nle choppa</Text>
+        <Text>NLE Choppa</Text>
         <Slider
           style={{ width: "75%", height: "10%" }}
           minimumValue={0}

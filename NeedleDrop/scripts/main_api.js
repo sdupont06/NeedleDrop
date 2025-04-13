@@ -14,7 +14,7 @@ require('dotenv').config();
 
 // Spotify API Credentials
 async function getCreds(){
-    const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
+    const CLIENT_ID = "0c16c345ac5f48c4a0d73d56239855a3";
     const CLIENT_SECRET = await getInput("What is the key?: ");
     console.log(`You entered: ${CLIENT_SECRET}`);
     if (CLIENT_SECRET == 0) {
@@ -30,7 +30,7 @@ async function getCreds(){
 // Chosen genre will recommend first few songs from Gemini
 async function welcome(genre, mood) {
   // Create a prompt
-  const prompt = "Generate 3 songs (follow the number strictly, do not go above or below the amount) from the following genre and mood: " + genre + ", " + mood +
+  const prompt = "Generate 30 songs (follow the number strictly, do not go above or below the amount) from the following genre and mood: " + genre + ", " + mood +
   ".\nProvide the response for each song with no enumeration and ONLY in the format of the Song Name per line, no gaps between lines";
 
   // Send the prompt to the model
@@ -44,10 +44,11 @@ async function welcome(genre, mood) {
 }
 // welcome("Rock n Roll", "Festive").catch(console.error);
 
+// Function to get the access token (OAuth2 Client Credentials Flow)
 async function getAccessToken() {
   const authOptions = {
     headers: {
-      'Authorization': 'Basic ' + Buffer.from(process.env.CLIENT_ID + ':' + process.env.CLIENT_SECRET).toString('base64'),
+      'Authorization': 'Basic ' + Buffer.from(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET).toString('base64'),
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     data: 'grant_type=client_credentials',
@@ -82,7 +83,7 @@ async function getInput(prompt) {
  
 // Function to get the actual track information using the song ID
 async function getArtist(songId, accessToken) {
-  const trackUrl = `https://api.spotify.com/v1/tracks/${songId}`;
+  const trackUrl = 'https://api.spotify.com/v1/tracks/'+songId;
 
   try {
       const response = await axios.get(trackUrl, {
@@ -92,14 +93,13 @@ async function getArtist(songId, accessToken) {
       });
 
       const track = response.data;
-      const previewUrl = track.preview_url;
 
-      return track.artist.name;
+      return track.album.images[0].url;
       // console.log('Track details:', track.name);
       // console.log('Artists:', track.artists.map(artist => artist.name).join(', '));
       // console.log('Album:', track.album.name);
       // console.log('Track URL:', track.external_urls.spotify);
-      return track;
+      // return track;
   } catch (error) {
       console.error('Error getting track by ID:', error.response.data);
   }
@@ -114,7 +114,9 @@ async function getPreview(songName) {
     let ret = {
       name: "",
       url: "",
-      preview: ""
+      preview: "",
+      img: "",
+
     };
 
     if (result.success) {
@@ -143,6 +145,10 @@ async function main() {
     const credsValid = await getCreds();
     if (!credsValid) return console.log("Invalid Spotify credentials. Exiting.");
 
+    // Gets access token for Spotify
+    const accessToken = await getAccessToken();
+    if (!accessToken) return;
+
     // Prompt user for genre and mood
     const genre = await getInput("Enter a music genre: ");
     const mood = await getInput("What's your mood right now?: ");
@@ -155,13 +161,12 @@ async function main() {
     // // For each song title in the list, gets the preview info from Spotify
     for (const title of songTitles) {
       if(!title) { break; }
-      // console.log(`\n Searching for preview of: ${title}`);
       const song = await getPreview(title);
       const url = song.url.split("https://open.spotify.com/track/")
-      console.log(url[1]);
-      const artname = getArtist(url[1], await getAccessToken());
-      
-      console.log(artname);
+
+      const artname = await getArtist(url[1], accessToken);
+      // console.log(artname);
+      song.img = artname;
       ret.push(song);
     }
     // Stringify 

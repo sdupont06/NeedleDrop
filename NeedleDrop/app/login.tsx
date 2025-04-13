@@ -46,8 +46,6 @@ export default function LoginPage() {
   // console.log(response.params.code);
 
   useEffect(() => {
-    setLog();
-    RootLayout();
     if (response?.type == "success") {
       nav.navigate("home");
       const { access_token } = response.params;

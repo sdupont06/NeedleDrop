@@ -8,7 +8,6 @@ import HomeScreen from "./(tabs)/index";
 import LoginPage from "./login";
 import LoadingScreen from "./loading";
 import TabLayout from "./(tabs)/_layout";
-import { Stack } from "expo-router";
 
 const Stack = createNativeStackNavigator();
 export var isLoggedIn = 0;

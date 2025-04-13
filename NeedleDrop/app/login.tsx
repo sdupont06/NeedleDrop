@@ -15,8 +15,6 @@ import RootLayout, { setLog, isLoggedIn } from "./_layout";
 
 
 const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
-const REDIRECT_URI = makeRedirectUri();
-
 
 const REDIRECT_URI = AuthSession.makeRedirectUri({
   scheme: "NeedleDrop",
@@ -47,7 +45,6 @@ export default function LoginPage() {
     {
       clientId: CLIENT_ID,
       scopes: SCOPES,
-
       redirectUri: "exp://127.0.0.1:8081",
       responseType: "code",
 

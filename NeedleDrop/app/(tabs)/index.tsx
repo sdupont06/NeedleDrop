@@ -111,7 +111,6 @@ export default function HomeScreen() {
   ];
 
   async function playSound() {
-    console.log("Loading Sound");
     const { sound } = await Audio.Sound.createAsync(
       {
         uri: songs[curSongIndex].preview,
@@ -130,13 +129,11 @@ export default function HomeScreen() {
       }
     });
 
-    console.log("Playing Sound");
     setPaused(false);
     await sound.playAsync();
   }
 
   const togglePlayback = async () => {
-    console.log(paused);
     if (sound) {
       if (paused) {
         await sound.playAsync();

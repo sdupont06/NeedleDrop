@@ -1,24 +1,30 @@
-// app/_layout.tsx
-import { Stack } from "expo-router";
-import React, { useState, useEffect } from "react";
-import LoadingScreen from "./loading";
+import React, { useState } from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-export default function Layout() {
-  const [isAppLoading, setIsAppLoading] = useState(true);
+import LoginPage from "./login";
+import TabLayout from "./(tabs)/_layout";
+//import { Stack } from "expo-router";
 
-  const handleFadeOutComplete = () => {
-    setIsAppLoading(false);
-  };
+const Stack = createNativeStackNavigator();
+export var isLoggedIn = 0;
 
-  useEffect(() => {
-    // fallback in case fade callback fails
-    const timeout = setTimeout(() => setIsAppLoading(false), 3000);
-    return () => clearTimeout(timeout);
-  }, []);
+export function setLog() {
+  isLoggedIn = 1;
+}
 
-  if (isAppLoading) {
-    return <LoadingScreen onFadeOutComplete={handleFadeOutComplete} />;
-  }
-
-  return <Stack screenOptions={{ headerShown: false }} />;
+export default function RootLayout() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="login"
+        component={LoginPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="home"
+        component={TabLayout}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
 }

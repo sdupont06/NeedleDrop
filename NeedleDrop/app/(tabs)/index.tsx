@@ -4,6 +4,7 @@ import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Audio } from "expo-av";
 import {
   Gesture,
   GestureDetector,
@@ -28,6 +29,7 @@ let likedSongs: Song[] = [];
 export default function HomeScreen() {
   let [curSongIndex, setCurSongIndex] = useState(0);
   let [paused, setPaused] = useState(false);
+  let [sound, setSound] = useState<Audio.Sound | null>(null);
 
   const translateX = useSharedValue(0);
 
@@ -52,7 +54,6 @@ export default function HomeScreen() {
   };
 
   const getLikedSongs = async () => {
-    console.log("retrieving songs");
     const value = await AsyncStorage.getItem("likedSongs").catch((e) => {
       console.log(e);
     });
@@ -67,28 +68,57 @@ export default function HomeScreen() {
     }, [])
   );
 
+  useEffect(() => {
+    playSound();
+  }, [curSongIndex]);
+
+  useEffect(() => {
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, [sound]);
+
   const songs = [
     {
       id: "1",
       title: "React Logo!",
       artist: "idk lol",
       path: "https://e.snmc.io/i/600/s/e2a2db773ad2fa176540615da15bebda/11194507/travis-scott-meltdown-Cover-Art.jpg",
+      preview: "",
     },
     {
       id: "2",
       title: "nothing!",
       artist: "nobody",
       path: "../../assets/images/icon.png",
+      preview: "",
     },
     {
       id: "3",
       title: "NeedleDrop!",
       artist: "Sam!",
       path: "../../assets/images/needledrop_icon.png",
+      preview: "",
     },
   ];
 
-  const nextSong = () => {
+  async function playSound() {
+    console.log("Loading Sound");
+    const { sound } = await Audio.Sound.createAsync(
+      {
+        uri: songs[curSongIndex].preview,
+      },
+      { shouldPlay: true }
+    );
+    setSound(sound);
+
+    console.log("Playing Sound");
+    await sound.playAsync();
+  }
+
+  const nextSong = async () => {
     setCurSongIndex((curSongIndex + 1) % songs.length);
   };
 
@@ -109,7 +139,7 @@ export default function HomeScreen() {
     });
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <GestureHandlerRootView
         style={{
           flex: 5,
@@ -184,7 +214,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1 }}></View>
-    </>
+    </View>
   );
 }
 

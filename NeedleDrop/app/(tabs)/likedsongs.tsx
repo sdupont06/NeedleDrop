@@ -68,7 +68,6 @@ export default function LikedSongsPage() {
   let [likedSongs, setLikedSongs] = useState<Song[]>([]);
 
   const getLikedSongs = async () => {
-    console.log("retrieving songs");
     const value = await AsyncStorage.getItem("likedSongs").catch((e) => {
       console.log(e);
     });
@@ -86,7 +85,6 @@ export default function LikedSongsPage() {
   const removeLiked = (title: string) => {
     likedSongs = likedSongs.filter((song) => song.title != title);
     setLikedSongs(likedSongs);
-    console.log(likedSongs);
     saveLikedSongs();
   };
 
@@ -99,6 +97,9 @@ export default function LikedSongsPage() {
   return (
     <Provider>
       <View style={styles.container}>
+        <Text style={{ textAlign: "center", fontSize: 24, paddingBottom: 10 }}>
+          Liked Songs
+        </Text>
         <FlatList
           data={likedSongs}
           renderItem={({ item }) => (

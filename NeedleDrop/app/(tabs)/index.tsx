@@ -4,7 +4,6 @@ import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ImageColors from "react-native-image-colors";
 import {
   Gesture,
   GestureDetector,
@@ -31,41 +30,6 @@ export default function HomeScreen() {
   let [bgColor, setBgColor] = useState("#FFFFFF");
 
   const translateX = useSharedValue(0);
-
-  const testColor = async () => {
-    const uri =
-      "https://e.snmc.io/i/600/s/e2a2db773ad2fa176540615da15bebda/11194507/travis-scott-meltdown-Cover-Art.jpg"; // Replace with a valid image URL
-    const color = await getAverageColor(uri);
-    console.log("Average Color:", color);
-  };
-
-  const getAverageColor = async (uri: string) => {
-    const result = await ImageColors.getColors(uri, {
-      fallback: "#ffffff",
-      cache: true,
-      key: uri,
-    });
-
-    switch (result.platform) {
-      case "android":
-        return result.dominant;
-      case "ios":
-        return result.background;
-      default:
-        return "#ffffff";
-    }
-  };
-
-  useEffect(() => {
-    // getAverageColor(songs[curSongIndex].path)
-    //   .then((value) => {
-    //     if (value != null) {
-    //       setBgColor(value);
-    //     }
-    //   })
-    //   .catch(console.warn);
-    testColor();
-  }, [curSongIndex]);
 
   const likeSong = () => {
     let unique = true;
@@ -158,7 +122,6 @@ export default function HomeScreen() {
           justifyContent: "flex-start",
           alignItems: "center",
           paddingBottom: 20,
-          backgroundColor: bgColor,
         }}
       >
         <Text

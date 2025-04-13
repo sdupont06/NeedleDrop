@@ -1,18 +1,20 @@
 import React, { useEffect } from "react";
 import { Image } from "react-native";
-import { View, Text, Alert, TouchableOpacity, StyleSheet } from "react-native";
+import { useGlobalSearchParams, useRouter } from 'expo-router';
+import * as api from '../scripts/getToken';
 import {
-  makeRedirectUri,
-  useAuthRequest,
-  ResponseType,
-} from "expo-auth-session";
+  View,
+  Text,
+  Alert,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import * as AuthSession from "expo-auth-session";
 
 const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
 
-const REDIRECT_URI = makeRedirectUri({
+const REDIRECT_URI = AuthSession.makeRedirectUri({
   scheme: "NeedleDrop",
-  preferLocalhost: true,
-  // path: "(tabs)",
 });
 
 const SCOPES = [
@@ -31,19 +33,27 @@ interface LoginPageProps {
 }
 
 export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
-  const [request, response, promptAsync] = useAuthRequest(
+  const router = useRouter();
+
+  const [request, response, promptAsync] = AuthSession.useAuthRequest(
     {
       clientId: CLIENT_ID,
       scopes: SCOPES,
       redirectUri: "http://127.0.0.1:8081",
-      responseType: ResponseType.Token,
+      responseType: "code",
     },
     discovery
   );
+  const glob = useGlobalSearchParams();
+  // console.log(glob.code);
 
   useEffect(() => {
-    if (response?.type === "success") {
-      const { access_token } = response.params;
+    // const access_token = 2;
+    // Alert.alert("Login Successful", `Token: ${access_token}`);
+    // onLoginSuccess();
+    if (glob.code != null) {
+      const access_token = api.getAccessToken("http://127.0.0.1:8081", glob.code);
+      console.log(access_token);
       Alert.alert("Login Successful", `Token: ${access_token}`);
       onLoginSuccess();
     }

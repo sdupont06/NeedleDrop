@@ -2,7 +2,9 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const spotifyPreviewFinder = require('spotify-preview-finder');
 const axios = require('axios');
-const readline = require('readline');   
+const readline = require('readline'); 
+const { stringify } = require('querystring');
+const fs = require('fs');
 
 // Login page passes global auth token 
 const API_KEY = 'AIzaSyDmxPwZnct2FbUlq_9td9Ucd1HEpMfz29k';
@@ -28,8 +30,8 @@ async function getCreds(){
 // Chosen genre will recommend first few songs from Gemini
 async function welcome(genre, mood) {
   // Create a prompt
-  const prompt = "Generate 5 songs from the following genre and mood: " + genre + ", " + mood +
-  ".\nProvide the response for each song in the format of [Song Name], [newline].";
+  const prompt = "Generate 5 songs (follow the number strictly, do not go above or below the amount) from the following genre and mood: " + genre + ", " + mood +
+  ".\nProvide the response for each song with no enumeration and ONLY in the format of the Song Name per line, no gaps between lines";
 
   // Send the prompt to the model
   const result = await model.generateContent(prompt);
@@ -60,13 +62,13 @@ async function getInput(prompt) {
 
 
 // Function to get the access token (OAuth2 Client Credentials Flow)
-async function getAccessToken() {
+export async function getAccessToken(redir, code) {
     const authOptions = {
       headers: {
-        'Authorization': 'Basic ' + Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'),
+        'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64')),
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      data: 'grant_type=client_credentials',
+      data: 'grant_type=authorization_code, redirect_uri='+redir+',code='+code,
       method: 'POST',
       url: 'https://accounts.spotify.com/api/token',
     };
@@ -86,15 +88,24 @@ async function getPreview(songName) {
     // Get preview URLs for a song (limit is optional, default is 5)
     const result = await spotifyPreviewFinder(songName, 1);
     
+    let ret = {
+      name: "",
+      url: "",
+      preview: ""
+    };
+
     if (result.success) {
       result.results.forEach(song => {
-        console.log(`\nSong: ${song.name}`);
-        console.log(`Spotify URL: ${song.spotifyUrl}`);
-        console.log('Preview URLs:');
-        console.log('Artists:', song.artists.map(artist => artist.name).join(', '));
-        console.log('Album:', song.album.name);
-        song.previewUrls.forEach(url => console.log(`- ${url}`));
+        // console.log(`\nSong: ${song.name}`);
+        ret.name = song.name;
+        // console.log(`Spotify URL: ${song.spotifyUrl}`);
+        ret.url = song.spotifyUrl;
+        // console.log('Preview URLs:');
+        ret.preview = song.previewUrls;
+        // song.previewUrls.forEach(url => console.log(`- ${url}`));
       });
+      // console.log(ret);
+      return ret;
     } else {
       console.error('Error:', result.error);
     }
@@ -110,8 +121,8 @@ async function main() {
     if (!credsValid) return console.log("Invalid Spotify credentials. Exiting.");
 
     // Gets access token for Spotify
-    const accessToken = await getAccessToken();
-    if (!accessToken) return;
+    // const accessToken = await getAccessToken();
+    // if (!accessToken) return;
 
     // Prompt user for genre and mood
     const genre = await getInput("Enter a music genre: ");
@@ -119,34 +130,32 @@ async function main() {
 
     // Get output from Gemini using user input for genre and mood
     const geminiOutput = await welcome(genre, mood);
+    const songTitles = geminiOutput.split('\n');
 
-    // Creates list of song titles from geminiOutput
-    const songTitles = geminiOutput
-        .split('\n')
-        .map(line => line.trim())
-        .filter(title => title.length > 0 && !title.toLowerCase().includes("song") && !title.startsWith("Example"));
-
-
-    // For each song title in the list, gets the preview info from Spotify
+    const ret = [];
+    // // For each song title in the list, gets the preview info from Spotify
     for (const title of songTitles) {
-        console.log(`\n Searching for preview of: ${title}`);
-        await getPreview(title);
+      if(!title) { break; }
+      // console.log(`\n Searching for preview of: ${title}`);
+      const song = await getPreview(title);
+      // console.log(song);
+      ret.push(song);
     }
+    // Stringify 
+    const jsonString = JSON.stringify(ret);
+    
+    fs.writeFile('test.json', jsonString, err => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log('File written successfully');
+      }
+    });
 
-    return 0;
-    // const songTitle = 'Lord Of Chaos'; // Replace with your song title
-    // const songName = await searchSong(songTitle, accessToken);
-
-    // if (songName) {
-    //     const songID = await getTrackById(songName, accessToken);
-    //     return songID;
-    // }
+    return 1;
 }
 
-// console.log(main());
-// Every 5 songs, use past liked songs to recommend new songs and genre, perhaps
-// throwing in a random chance to recommmend a niche genre/song
-
+main();
 
 
 

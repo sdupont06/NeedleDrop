@@ -22,14 +22,17 @@ export interface Song {
   title: string;
   artist: string;
   path: string;
+  preview: string;
 }
 
 let likedSongs: Song[] = [];
 
 export default function HomeScreen() {
   let [curSongIndex, setCurSongIndex] = useState(0);
-  let [paused, setPaused] = useState(false);
+  let [paused, setPaused] = useState(true);
   let [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [duration, setDuration] = useState(1);
+  const [position, setPosition] = useState(1);
 
   const translateX = useSharedValue(0);
 
@@ -86,21 +89,24 @@ export default function HomeScreen() {
       title: "React Logo!",
       artist: "idk lol",
       path: "https://e.snmc.io/i/600/s/e2a2db773ad2fa176540615da15bebda/11194507/travis-scott-meltdown-Cover-Art.jpg",
-      preview: "",
+      preview:
+        "https://p.scdn.co/mp3-preview/644d4ce6d4a3afce512d54904ce5872ccfb94493",
     },
     {
       id: "2",
       title: "nothing!",
       artist: "nobody",
       path: "../../assets/images/icon.png",
-      preview: "",
+      preview:
+        "https://p.scdn.co/mp3-preview/51c08d92815cce4ac2de94a7335a430b81234624",
     },
     {
       id: "3",
       title: "NeedleDrop!",
       artist: "Sam!",
       path: "../../assets/images/needledrop_icon.png",
-      preview: "",
+      preview:
+        "https://p.scdn.co/mp3-preview/51c08d92815cce4ac2de94a7335a430b81234624",
     },
   ];
 
@@ -114,9 +120,32 @@ export default function HomeScreen() {
     );
     setSound(sound);
 
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if (status.isLoaded) {
+        setPosition(status.positionMillis || 0);
+        setDuration(status.durationMillis || 1);
+      }
+      if (status.isLoaded && status.didJustFinish) {
+        sound.replayAsync(); // Restart the clip
+      }
+    });
+
     console.log("Playing Sound");
+    setPaused(false);
     await sound.playAsync();
   }
+
+  const togglePlayback = async () => {
+    console.log(paused);
+    if (sound) {
+      if (paused) {
+        await sound.playAsync();
+      } else {
+        await sound.pauseAsync();
+      }
+      setPaused(!paused);
+    }
+  };
 
   const nextSong = async () => {
     setCurSongIndex((curSongIndex + 1) % songs.length);
@@ -137,6 +166,11 @@ export default function HomeScreen() {
       }
       translateX.value = withSpring(0);
     });
+
+  const handleSliderValueChange = async (value: number) => {
+    const newPos = value * duration;
+    await sound?.setPositionAsync(newPos);
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -185,6 +219,9 @@ export default function HomeScreen() {
           minimumTrackTintColor="#8a8a8a"
           maximumTrackTintColor="#dcdcdc"
           thumbImage={require("../../assets/images/thumbicon.png")}
+          value={position / duration}
+          onValueChange={(value) => handleSliderValueChange(value)}
+          tapToSeek={true}
         />
       </View>
       <View
@@ -201,10 +238,10 @@ export default function HomeScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.pauseButton}
-          onPress={() => setPaused(!paused)}
+          onPress={() => togglePlayback()}
         >
           <Ionicons
-            name={paused ? "pause-outline" : "play"}
+            name={paused ? "play" : "pause-outline"}
             size={40}
             color="#513D30"
           ></Ionicons>

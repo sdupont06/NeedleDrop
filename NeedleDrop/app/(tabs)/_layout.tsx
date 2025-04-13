@@ -7,12 +7,17 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeScreen from ".";
+import LikedSongsPage from "./likedsongs";
+
+const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
+    <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: "#74B4AD",
         headerShown: false,
@@ -27,8 +32,9 @@ export default function TabLayout() {
         }),
       }}
     >
-      <Tabs.Screen
+      <Tab.Screen
         name="index"
+        component={HomeScreen}
         options={{
           title: "My Music",
           tabBarIcon: ({ color }) => (
@@ -37,8 +43,9 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
+      <Tab.Screen
         name="likedsongs"
+        component={LikedSongsPage}
         options={{
           title: "Liked Songs",
           tabBarIcon: ({ color }) => (
@@ -46,6 +53,6 @@ export default function TabLayout() {
           ),
         }}
       />
-    </Tabs>
+    </Tab.Navigator>
   );
 }

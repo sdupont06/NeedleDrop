@@ -38,7 +38,6 @@ export default function LoginPage() {
     {
       clientId: CLIENT_ID,
       scopes: SCOPES,
-
       redirectUri: "exp://127.0.0.1:8081",
       responseType: "code",
     },
@@ -51,9 +50,7 @@ export default function LoginPage() {
     RootLayout();
     if (response?.type == "success") {
       nav.navigate("home");
-      const access_token =
-        "BQB3Agk9CcCPtXiDuphIvH5WiTMxP-LP0KzREm96EPFWhxFBGhbKCCVQTkEM8yl6tfZDv7XkaiNu8nlpfCcDPquhoBiMxqO2vwNxkJAo4dAiO_Itv8LWZ7QEFH18duHLKBC5SuLapi8";
-      Alert.alert("Login Successful", "Token: " + access_token);
+      const { access_token } = response.params;
       setLog();
     }
   }, [response]);

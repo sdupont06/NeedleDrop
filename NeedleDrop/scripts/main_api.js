@@ -30,7 +30,7 @@ async function getCreds(){
 // Chosen genre will recommend first few songs from Gemini
 async function welcome(genre, mood) {
   // Create a prompt
-  const prompt = "Generate 30 songs (follow the number strictly, do not go above or below the amount) from the following genre and mood: " + genre + ", " + mood +
+  const prompt = "Generate 50 songs (follow the number strictly, do not go above or below the amount) from the following genre and mood: " + genre + ", " + mood +
   ".\nProvide the response for each song with no enumeration and ONLY in the format of the Song Name per line, no gaps between lines";
 
   // Send the prompt to the model

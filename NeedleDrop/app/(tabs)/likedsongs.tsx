@@ -6,7 +6,12 @@ import { Menu, Provider } from "react-native-paper";
 import { Song } from ".";
 import { useFocusEffect } from "expo-router";
 
-type ItemProps = { title: string; artist: string; imageurl: string };
+type ItemProps = {
+  title: string;
+  artist: string;
+  imageurl: string;
+  removeLiked: (title: string) => void;
+};
 
 function Item(props: ItemProps) {
   let [visible, setVisible] = useState(false);
@@ -47,7 +52,12 @@ function Item(props: ItemProps) {
         >
           <Menu.Item onPress={() => {}} title="Add to Playlist" />
           <Menu.Item onPress={() => {}} title="Share" />
-          <Menu.Item onPress={() => {}} title="Remove from Liked Songs" />
+          <Menu.Item
+            onPress={() => {
+              props.removeLiked(props.title);
+            }}
+            title="Remove from Liked Songs"
+          />
         </Menu>
       </View>
     </View>
@@ -67,6 +77,19 @@ export default function LikedSongsPage() {
     }
   };
 
+  const saveLikedSongs = async () => {
+    await AsyncStorage.setItem("likedSongs", JSON.stringify(likedSongs)).catch(
+      (e) => console.log(e)
+    );
+  };
+
+  const removeLiked = (title: string) => {
+    likedSongs = likedSongs.filter((song) => song.title != title);
+    setLikedSongs(likedSongs);
+    console.log(likedSongs);
+    saveLikedSongs();
+  };
+
   useFocusEffect(
     useCallback(() => {
       getLikedSongs();
@@ -83,6 +106,7 @@ export default function LikedSongsPage() {
               title={item.title}
               artist={item.artist}
               imageurl={item.path}
+              removeLiked={removeLiked}
             />
           )}
           keyExtractor={(item) => item.id}

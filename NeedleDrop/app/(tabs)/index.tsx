@@ -1,5 +1,5 @@
 import { View, Image, Text, Button, TouchableOpacity } from "react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
@@ -14,6 +14,7 @@ import Animated, {
   withSpring,
   runOnJS,
 } from "react-native-reanimated";
+import { useFocusEffect } from "expo-router";
 
 export interface Song {
   id: string;
@@ -22,12 +23,11 @@ export interface Song {
   path: string;
 }
 
-export const likedSongs: Song[] = [];
+let likedSongs: Song[] = [];
 
 export default function HomeScreen() {
   let [curSongIndex, setCurSongIndex] = useState(0);
   let [paused, setPaused] = useState(false);
-  let [bgColor, setBgColor] = useState("#FFFFFF");
 
   const translateX = useSharedValue(0);
 
@@ -50,6 +50,22 @@ export default function HomeScreen() {
     );
     // await AsyncStorage.setItem("likedSongs", "");
   };
+
+  const getLikedSongs = async () => {
+    console.log("retrieving songs");
+    const value = await AsyncStorage.getItem("likedSongs").catch((e) => {
+      console.log(e);
+    });
+    if (value != null) {
+      likedSongs = JSON.parse(value);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getLikedSongs();
+    }, [])
+  );
 
   const songs = [
     {

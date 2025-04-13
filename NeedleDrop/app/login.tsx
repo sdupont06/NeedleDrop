@@ -1,16 +1,29 @@
 import React, { useEffect } from "react";
 import { Image } from "react-native";
-import { View, Text, Alert, TouchableOpacity, StyleSheet } from "react-native";
+import * as api from '../scripts/getToken';
+import { useNavigation } from '@react-navigation/native';
+import { useRouter } from "expo-router";
 import {
-  makeRedirectUri,
-  useAuthRequest,
-  ResponseType,
-} from "expo-auth-session";
+  View,
+  Text,
+  Alert,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import * as AuthSession from "expo-auth-session";
+import RootLayout, { setLog, isLoggedIn } from "./_layout";
+
 
 const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
 const REDIRECT_URI = makeRedirectUri();
 
-console.log("uri: " + REDIRECT_URI);
+
+const REDIRECT_URI = AuthSession.makeRedirectUri({
+  scheme: "NeedleDrop",
+  path: "127.0.0.1:8081"
+});
+
+// console.log(REDIRECT_URI);
 
 const SCOPES = [
   "user-read-email",
@@ -23,26 +36,34 @@ const discovery = {
   tokenEndpoint: "https://accounts.spotify.com/api/token",
 };
 
-interface LoginPageProps {
-  onLoginSuccess: () => void;
-}
+// interface LoginPageProps {
+//   onLoginSuccess: () => void;
+// }
 
-export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
-  const [request, response, promptAsync] = useAuthRequest(
+export default function LoginPage() {
+  const nav = useNavigation();
+
+  const [request, response, promptAsync] = AuthSession.useAuthRequest(
     {
       clientId: CLIENT_ID,
       scopes: SCOPES,
-      redirectUri: REDIRECT_URI,
-      responseType: ResponseType.Token,
+
+      redirectUri: "exp://127.0.0.1:8081",
+      responseType: "code",
+
     },
     discovery
   );
+  // console.log(response.params.code);
 
   useEffect(() => {
-    if (response?.type === "success") {
-      const { access_token } = response.params;
-      Alert.alert("Login Successful", `Token: ${access_token}`);
-      onLoginSuccess();
+    setLog();
+    RootLayout();
+    if (response?.type == "success") {
+      nav.navigate("home");
+      const access_token = "BQB3Agk9CcCPtXiDuphIvH5WiTMxP-LP0KzREm96EPFWhxFBGhbKCCVQTkEM8yl6tfZDv7XkaiNu8nlpfCcDPquhoBiMxqO2vwNxkJAo4dAiO_Itv8LWZ7QEFH18duHLKBC5SuLapi8";
+      Alert.alert("Login Successful", 'Token: ' + access_token);
+      setLog();
     }
   }, [response]);
   return (

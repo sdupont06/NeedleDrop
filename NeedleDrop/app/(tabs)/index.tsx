@@ -2,6 +2,7 @@ import { View, Image, Text, Button, TouchableOpacity } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Audio } from "expo-av";
@@ -27,7 +28,7 @@ export interface Song {
 
 let likedSongs: Song[] = [];
 
-export default function HomeScreen() {
+export default function HomeScreen({}) {
   let [curSongIndex, setCurSongIndex] = useState(0);
   let [paused, setPaused] = useState(true);
   let [sound, setSound] = useState<Audio.Sound | null>(null);

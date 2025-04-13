@@ -62,13 +62,16 @@ async function getInput(prompt) {
 
 
 // Function to get the access token (OAuth2 Client Credentials Flow)
-export async function getAccessToken(redir, code) {
+async function getAccessToken(redir, code) {
+    const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
+    const CLIENT_SECRET = "f8bdc778be784e4a919f318a864d1ff5";
+    
     const authOptions = {
       headers: {
-        'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64')),
+        'Authorization': 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64')),
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      data: 'grant_type=authorization_code, redirect_uri='+redir+',code='+code,
+      data: 'grant_type=client_credentials',
       method: 'POST',
       url: 'https://accounts.spotify.com/api/token',
     };
@@ -143,42 +146,47 @@ async function getArtist(songId, accessToken) {
 // Main execution
 async function main(genre, mood, accessToken) {
     // Gets Spotify credentials from user
-    const credsValid = await getCreds();
-    if (!credsValid) return console.log("Invalid Spotify credentials. Exiting.");
+    // const credsValid = await getCreds();
+    // if (!credsValid) return console.log("Invalid Spotify credentials. Exiting.");
 
     // Prompt user for genre and mood
     // const genre = await getInput("Enter a music genre: ");
     // const mood = await getInput("What's your mood right now?: ");
 
     // Get output from Gemini using user input for genre and mood
-    const geminiOutput = await welcome(genre, mood);
-    const songTitles = geminiOutput.split('\n');
+    // const geminiOutput = await welcome(genre, mood);
+    // const songTitles = geminiOutput.split('\n');
 
-    const ret = [];
-    // // For each song title in the list, gets the preview info from Spotify
-    for (const title of songTitles) {
-      if(!title) { break; }
-      // console.log(`\n Searching for preview of: ${title}`);
-      const song = await getPreview(title);
-      const id = song.url.split("https://api.spotify.com/v1/tracks/");
-      song.artist = getArtist(id, accessToken)
-      // console.log(song);
-      ret.push(song);
-    }
-    // Stringify 
-    const jsonString = JSON.stringify(ret);
+    const ret = await getAccessToken("", "");
+    console.log(ret);
+    return ret;
+
+    // const ret = [];
+    // // // For each song title in the list, gets the preview info from Spotify
+    // for (const title of songTitles) {
+    //   if(!title) { break; }
+    //   // console.log(`\n Searching for preview of: ${title}`);
+    //   const song = await getPreview(title);
+    //   const id = song.url.split("https://api.spotify.com/v1/tracks/");
+    //   song.artist = getArtist(id, accessToken)
+    //   // console.log(song);
+    //   ret.push(song);
+    // }
+    // // Stringify 
+    // const jsonString = JSON.stringify(ret);
     
-    fs.writeFile('test.json', jsonString, err => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log('File written successfully');
-      }
-    });
+    // fs.writeFile('test.json', jsonString, err => {
+    //   if (err) {
+    //     console.error(err);
+    //   } else {
+    //     console.log('File written successfully');
+    //   }
+    // });
 
     return 1;
 }
 
+main();
 /*
 OLD STUFF BELOW
 

@@ -8,12 +8,9 @@ import {
 } from "expo-auth-session";
 
 const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
+const REDIRECT_URI = makeRedirectUri();
 
-const REDIRECT_URI = makeRedirectUri({
-  scheme: "NeedleDrop",
-  preferLocalhost: true,
-  // path: "(tabs)",
-});
+console.log("uri: " + REDIRECT_URI);
 
 const SCOPES = [
   "user-read-email",
@@ -35,7 +32,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
     {
       clientId: CLIENT_ID,
       scopes: SCOPES,
-      redirectUri: "http://127.0.0.1:8081",
+      redirectUri: REDIRECT_URI,
       responseType: ResponseType.Token,
     },
     discovery

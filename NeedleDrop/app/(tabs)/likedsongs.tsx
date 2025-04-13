@@ -103,7 +103,7 @@ export default function LikedSongsPage() {
           renderItem={({ item }) => (
             <Item
               name={item.name}
-              imageurl={item.image}
+              imageurl={item.img}
               removeLiked={removeLiked}
             />
           )}
@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 1,
     marginHorizontal: 16,
-    borderWidth: 1,
     opacity: 0.8,
   },
   songname: {

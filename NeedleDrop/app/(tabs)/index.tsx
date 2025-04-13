@@ -20,7 +20,7 @@ import { useFocusEffect } from "expo-router";
 
 export interface Song {
   name: string;
-  image: string;
+  img: string;
   preview: string;
   url: string;
 }
@@ -88,7 +88,7 @@ export default function HomeScreen({}) {
   async function playSound() {
     const { sound } = await Audio.Sound.createAsync(
       {
-        uri: songs[curSongIndex].preview,
+        uri: songs[curSongIndex].preview[0],
       },
       { shouldPlay: true }
     );
@@ -157,12 +157,12 @@ export default function HomeScreen({}) {
       >
         <GestureDetector gesture={swipeGesture}>
           <Animated.Image
-            source={{ uri: songs[curSongIndex].path }}
+            source={{ uri: songs[curSongIndex].img }}
             style={{
               borderWidth: 1,
               borderRadius: 10,
-              width: "75%",
-              height: "85%",
+              width: "85%",
+              height: "70%",
               transform: [{ translateX: translateX }],
             }}
           ></Animated.Image>
@@ -178,12 +178,12 @@ export default function HomeScreen({}) {
       >
         <Text
           style={{
-            fontSize: 24,
+            fontSize: 16,
+            textAlign: "center",
           }}
         >
-          {songs[curSongIndex].title}
+          {songs[curSongIndex].name}
         </Text>
-        <Text>{songs[curSongIndex].artist}</Text>
         <Slider
           style={{ width: "75%", height: "10%" }}
           minimumValue={0}

@@ -1,12 +1,6 @@
 import React, { useEffect } from "react";
 import { Image } from "react-native";
-import {
-  View,
-  Text,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Alert, TouchableOpacity, StyleSheet } from "react-native";
 import {
   makeRedirectUri,
   useAuthRequest,
@@ -57,9 +51,9 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
   return (
     <View style={styles.container}>
       <View style={styles.logoSection}>
-      <Image
-        source={require("../assets/images/needledrop_icon.png")}
-        style={styles.logo}
+        <Image
+          source={require("../assets/images/needledrop_icon.png")}
+          style={styles.logo}
         />
       </View>
 
@@ -76,7 +70,6 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -89,7 +82,7 @@ const styles = StyleSheet.create({
     height: 600,
     marginBottom: 0,
     resizeMode: "contain",
-  },  
+  },
   logoSection: {
     flex: 1,
     justifyContent: "center",

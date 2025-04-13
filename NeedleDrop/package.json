@@ -23,6 +23,7 @@
     "axios": "^1.8.4",
     "dotenv": "^16.5.0",
     "expo": "~52.0.43",
+    "expo-auth-session": "~6.0.3",
     "expo-av": "^15.0.2",
     "expo-blur": "~14.0.3",
     "expo-constants": "~17.0.8",
@@ -48,7 +49,6 @@
     "react-native-screens": "~4.4.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "expo-auth-session": "~6.0.3",
     "spotify-preview-finder": "^1.1.1"
   },
   "devDependencies": {

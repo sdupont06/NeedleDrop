@@ -1,37 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { Stack, useRouter, useSegments } from "expo-router";
-import "react-native-reanimated";
+import React, { useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginPage from "./login";
-import TabLayout from "./(tabs)/_layout";
+import LoadingScreen from "./loading";
+
+const Stack = createNativeStackNavigator();
 
 export default function RootLayout() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Replace with actual auth logic
-  const router = useRouter();
-  const segments = useSegments();
+  const [isAppLoading, setIsAppLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
-    if (!isLoggedIn && segments[0] !== "login") {
-      // Redirect to login if not logged in
-      router.replace("/login");
-    } else if (isLoggedIn && segments[0] === "login") {
-      // Redirect to tabs if logged in
-      router.replace("/(tabs)");
-    }
-  }, [isLoggedIn, segments]);
-
-  const onLoginSuccess = () => {
-    setIsLoggedIn(true);
-  };
+  if (isAppLoading) {
+    return <LoadingScreen onFadeOutComplete={() => setIsAppLoading(false)} />;
+  }
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="login"
-        options={{ headerShown: false }}
-        initialParams={onLoginSuccess}
-      ></Stack.Screen>
-    </Stack>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {isLoggedIn ? (
+        <Stack.Screen name="Home" component={HomeScreen} />
+      ) : (
+        <Stack.Screen
+          name="Login"
+          children={() => (
+            <LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />
+          )}
+        />
+      )}
+    </Stack.Navigator>
   );
 }

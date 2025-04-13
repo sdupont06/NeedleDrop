@@ -2,7 +2,7 @@ import { View, Image, Text, Button, TouchableOpacity } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Audio } from "expo-av";
@@ -19,11 +19,10 @@ import Animated, {
 import { useFocusEffect } from "expo-router";
 
 export interface Song {
-  id: string;
-  title: string;
-  artist: string;
-  path: string;
+  name: string;
+  image: string;
   preview: string;
+  url: string;
 }
 
 let likedSongs: Song[] = [];
@@ -40,7 +39,7 @@ export default function HomeScreen({}) {
   const likeSong = () => {
     let unique = true;
     likedSongs.forEach((item) => {
-      if (item.id === songs[curSongIndex].id) {
+      if (item.name === songs[curSongIndex].name) {
         unique = false;
       }
     });
@@ -84,32 +83,7 @@ export default function HomeScreen({}) {
     };
   }, [sound]);
 
-  const songs = [
-    {
-      id: "1",
-      title: "React Logo!",
-      artist: "idk lol",
-      path: "https://e.snmc.io/i/600/s/e2a2db773ad2fa176540615da15bebda/11194507/travis-scott-meltdown-Cover-Art.jpg",
-      preview:
-        "https://p.scdn.co/mp3-preview/644d4ce6d4a3afce512d54904ce5872ccfb94493",
-    },
-    {
-      id: "2",
-      title: "nothing!",
-      artist: "nobody",
-      path: "../../assets/images/icon.png",
-      preview:
-        "https://p.scdn.co/mp3-preview/51c08d92815cce4ac2de94a7335a430b81234624",
-    },
-    {
-      id: "3",
-      title: "NeedleDrop!",
-      artist: "Sam!",
-      path: "../../assets/images/needledrop_icon.png",
-      preview:
-        "https://p.scdn.co/mp3-preview/51c08d92815cce4ac2de94a7335a430b81234624",
-    },
-  ];
+  const songs = require("../../scripts/songs.json");
 
   async function playSound() {
     const { sound } = await Audio.Sound.createAsync(

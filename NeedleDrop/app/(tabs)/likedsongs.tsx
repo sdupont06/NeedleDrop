@@ -7,8 +7,7 @@ import { Song } from ".";
 import { useFocusEffect } from "expo-router";
 
 type ItemProps = {
-  title: string;
-  artist: string;
+  name: string;
   imageurl: string;
   removeLiked: (title: string) => void;
 };
@@ -29,8 +28,7 @@ function Item(props: ItemProps) {
         />
       </View>
       <View style={{ flex: 1, marginLeft: 10 }}>
-        <Text style={styles.songname}>{props.title}</Text>
-        <Text style={styles.artistname}>{props.artist}</Text>
+        <Text style={styles.songname}>{props.name}</Text>
       </View>
       <View
         style={{
@@ -54,7 +52,7 @@ function Item(props: ItemProps) {
           <Menu.Item onPress={() => {}} title="Share" />
           <Menu.Item
             onPress={() => {
-              props.removeLiked(props.title);
+              props.removeLiked(props.name);
             }}
             title="Remove from Liked Songs"
           />
@@ -82,8 +80,8 @@ export default function LikedSongsPage() {
     );
   };
 
-  const removeLiked = (title: string) => {
-    likedSongs = likedSongs.filter((song) => song.title != title);
+  const removeLiked = (name: string) => {
+    likedSongs = likedSongs.filter((song) => song.name != name);
     setLikedSongs(likedSongs);
     saveLikedSongs();
   };
@@ -104,13 +102,12 @@ export default function LikedSongsPage() {
           data={likedSongs}
           renderItem={({ item }) => (
             <Item
-              title={item.title}
-              artist={item.artist}
-              imageurl={item.path}
+              name={item.name}
+              imageurl={item.image}
               removeLiked={removeLiked}
             />
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.name}
         />
       </View>
     </Provider>
@@ -120,11 +117,12 @@ export default function LikedSongsPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 60,
+    paddingTop: 60,
+    backgroundColor: "#f4e5b1",
   },
   item: {
     flexDirection: "row",
-    backgroundColor: "#74B4AD",
+    backgroundColor: "#D6C89B",
     alignItems: "center",
     padding: 10,
     marginVertical: 1,

@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import HomeScreen from "./(tabs)/index";
 
 import LoginPage from "./login";
+import TabLayout from "./(tabs)/_layout";
 //import { Stack } from "expo-router";
 
 const Stack = createNativeStackNavigator();
@@ -27,7 +28,7 @@ export default function RootLayout() {
       />
       <Stack.Screen
         name="home"
-        component={HomeScreen}
+        component={TabLayout}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

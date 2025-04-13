@@ -3,22 +3,15 @@ import { Image } from "react-native";
 // import * as api from '../scripts/getToken';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from "expo-router";
-import {
-  View,
-  Text,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Alert, TouchableOpacity, StyleSheet } from "react-native";
 import * as AuthSession from "expo-auth-session";
 import RootLayout, { setLog, isLoggedIn } from "./_layout";
-
 
 const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
 
 const REDIRECT_URI = AuthSession.makeRedirectUri({
   scheme: "NeedleDrop",
-  path: "127.0.0.1:8081"
+  path: "127.0.0.1:8081",
 });
 
 // console.log(REDIRECT_URI);
@@ -47,7 +40,6 @@ export default function LoginPage() {
       scopes: SCOPES,
       redirectUri: "exp://127.0.0.1:8081",
       responseType: "code",
-
     },
     discovery
   );

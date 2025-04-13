@@ -91,7 +91,8 @@ async function getPreview(songName) {
     let ret = {
       name: "",
       url: "",
-      preview: ""
+      preview: "",
+      artist: ""
     };
 
     if (result.success) {
@@ -114,19 +115,40 @@ async function getPreview(songName) {
   }
 }
 
+async function getArtist(songId, accessToken) {
+  const trackUrl = `https://api.spotify.com/v1/tracks/${songId}`;
+
+  try {
+      const response = await axios.get(trackUrl, {
+      headers: {
+          'Authorization': `Bearer ${accessToken}`,
+      },
+      });
+
+      const track = response.data;
+      const previewUrl = track.preview_url;
+
+      if (previewUrl) {
+      console.log('Preview URL:', previewUrl);
+      } else {
+      console.log('No preview URL available for this track.');
+      }
+      const ret = track.artists.map(artist => artist.name).join(', ');
+      return ret;
+  } catch (error) {
+      console.error('Error getting track by ID:', error.response.data);
+  }
+}
+
 // Main execution
-async function main() {
+async function main(genre, mood, accessToken) {
     // Gets Spotify credentials from user
     const credsValid = await getCreds();
     if (!credsValid) return console.log("Invalid Spotify credentials. Exiting.");
 
-    // Gets access token for Spotify
-    // const accessToken = await getAccessToken();
-    // if (!accessToken) return;
-
     // Prompt user for genre and mood
-    const genre = await getInput("Enter a music genre: ");
-    const mood = await getInput("What's your mood right now?: ");
+    // const genre = await getInput("Enter a music genre: ");
+    // const mood = await getInput("What's your mood right now?: ");
 
     // Get output from Gemini using user input for genre and mood
     const geminiOutput = await welcome(genre, mood);
@@ -138,6 +160,8 @@ async function main() {
       if(!title) { break; }
       // console.log(`\n Searching for preview of: ${title}`);
       const song = await getPreview(title);
+      const id = song.url.split("https://api.spotify.com/v1/tracks/");
+      song.artist = getArtist(id, accessToken)
       // console.log(song);
       ret.push(song);
     }
@@ -154,12 +178,6 @@ async function main() {
 
     return 1;
 }
-
-main();
-
-
-
-
 
 /*
 OLD STUFF BELOW
@@ -221,4 +239,4 @@ async function getTrackById(songId, accessToken) {
         console.error('Error getting track by ID:', error.response.data);
     }
 }
-    */
+*/

@@ -15,7 +15,10 @@ const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
 
 const REDIRECT_URI = AuthSession.makeRedirectUri({
   scheme: "NeedleDrop",
+  path: "127.0.0.1:8081"
 });
+
+// console.log(REDIRECT_URI);
 
 const SCOPES = [
   "user-read-email",
@@ -39,7 +42,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
     {
       clientId: CLIENT_ID,
       scopes: SCOPES,
-      redirectUri: "http://127.0.0.1:8081",
+      redirectUri: "exp://127.0.0.1:8081",
       responseType: "code",
     },
     discovery
@@ -52,9 +55,9 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
     // Alert.alert("Login Successful", `Token: ${access_token}`);
     // onLoginSuccess();
     if (glob.code != null) {
-      const access_token = api.getAccessToken("http://127.0.0.1:8081", glob.code);
+      const access_token = api.getAccessToken("exp://127.0.0.1:8081", glob.code);
       console.log(access_token);
-      Alert.alert("Login Successful", `Token: ${access_token}`);
+      Alert.alert("Login Successful", 'Token: ${access_token}');
       onLoginSuccess();
     }
   }, [response]);

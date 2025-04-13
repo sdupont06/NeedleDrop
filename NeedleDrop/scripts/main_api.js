@@ -28,10 +28,9 @@ async function getCreds(){
 
 // Welcome page gives a few genres and moods to choose
 // Chosen genre will recommend first few songs from Gemini
-async function welcome(genre, mood) {
+async function welcome(genre) {
   // Create a prompt
-  const prompt = "Generate 50 songs (follow the number strictly, do not go above or below the amount) from the following genre and mood: " + genre + ", " + mood +
-  ".\nProvide the response for each song with no enumeration and ONLY in the format of the Song Name per line, no gaps between lines";
+  const prompt = "For the following, do not number list them, just give the song names on each line. Generate 50 songs that were in the top 100 of the following genre: " + genre;
 
   // Send the prompt to the model
   const result = await model.generateContent(prompt);
@@ -154,7 +153,7 @@ async function main() {
     const mood = await getInput("What's your mood right now?: ");
 
     // Get output from Gemini using user input for genre and mood
-    const geminiOutput = await welcome(genre, mood);
+    const geminiOutput = await welcome(genre);
     const songTitles = geminiOutput.split('\n');
 
     const ret = [];

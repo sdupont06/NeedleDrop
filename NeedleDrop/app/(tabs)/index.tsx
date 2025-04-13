@@ -1,11 +1,11 @@
-import { View, Image, Text, Button, TouchableOpacity } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Audio } from "expo-av";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   Gesture,
   GestureDetector,
@@ -15,6 +15,7 @@ import Animated, {
   useSharedValue,
   withSpring,
   runOnJS,
+  useAnimatedStyle,
 } from "react-native-reanimated";
 import { useFocusEffect } from "expo-router";
 
@@ -33,6 +34,21 @@ export default function HomeScreen({}) {
   let [sound, setSound] = useState<Audio.Sound | null>(null);
   const [duration, setDuration] = useState(1);
   const [position, setPosition] = useState(1);
+
+  const heartScale = useSharedValue(1);
+  const xScale = useSharedValue(1);
+
+  const animatedHeartStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: withSpring(heartScale.value) }],
+    };
+  });
+
+  const animatedXStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: withSpring(xScale.value) }],
+    };
+  });
 
   const translateX = useSharedValue(0);
 
@@ -53,7 +69,7 @@ export default function HomeScreen({}) {
     await AsyncStorage.setItem("likedSongs", JSON.stringify(likedSongs)).catch(
       (e) => console.log(e)
     );
-    // await AsyncStorage.setItem("likedSongs", "");
+    //await AsyncStorage.setItem("likedSongs", "");
   };
 
   const getLikedSongs = async () => {
@@ -145,85 +161,125 @@ export default function HomeScreen({}) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <GestureHandlerRootView
-        style={{
-          flex: 5,
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 10,
-          paddingTop: 50,
-        }}
-      >
-        <GestureDetector gesture={swipeGesture}>
-          <Animated.Image
-            source={{ uri: songs[curSongIndex].img }}
-            style={{
-              borderWidth: 1,
-              borderRadius: 10,
-              width: "85%",
-              height: "70%",
-              transform: [{ translateX: translateX }],
-            }}
-          ></Animated.Image>
-        </GestureDetector>
-      </GestureHandlerRootView>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "flex-start",
-          alignItems: "center",
-          paddingBottom: 20,
-        }}
-      >
-        <Text
+    <LinearGradient colors={["#D6C89B", "#B7AC85"]} style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <GestureHandlerRootView
           style={{
-            fontSize: 16,
-            textAlign: "center",
+            flex: 5,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 10,
+            paddingTop: 50,
           }}
         >
-          {songs[curSongIndex].name}
-        </Text>
-        <Slider
-          style={{ width: "75%", height: "10%" }}
-          minimumValue={0}
-          maximumValue={1}
-          minimumTrackTintColor="#8a8a8a"
-          maximumTrackTintColor="#dcdcdc"
-          thumbImage={require("../../assets/images/thumbicon.png")}
-          value={position / duration}
-          onValueChange={(value) => handleSliderValueChange(value)}
-          tapToSeek={true}
-        />
-      </View>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          gap: "20%",
-        }}
-      >
-        <TouchableOpacity style={styles.sideActionButtons}>
-          <Ionicons name="close-outline" size={30} color="#74B4AD"></Ionicons>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.pauseButton}
-          onPress={() => togglePlayback()}
+          <GestureDetector gesture={swipeGesture}>
+            <Animated.Image
+              source={{ uri: songs[curSongIndex].img }}
+              style={{
+                borderWidth: 1,
+                borderRadius: 10,
+                width: "85%",
+                height: "70%",
+                transform: [{ translateX: translateX }],
+              }}
+            ></Animated.Image>
+          </GestureDetector>
+        </GestureHandlerRootView>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingBottom: 20,
+          }}
         >
-          <Ionicons
-            name={paused ? "play" : "pause-outline"}
-            size={40}
-            color="#513D30"
-          ></Ionicons>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.sideActionButtons}>
-          <Ionicons name="heart-outline" size={30} color="#D2695E"></Ionicons>
-        </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 20,
+              textAlign: "center",
+            }}
+          >
+            {songs[curSongIndex].name}
+          </Text>
+          <Slider
+            style={{ width: "75%", height: "10%" }}
+            minimumValue={0}
+            maximumValue={1}
+            minimumTrackTintColor="#8a8a8a"
+            maximumTrackTintColor="#dcdcdc"
+            thumbImage={require("../../assets/images/thumbicon.png")}
+            value={position / duration}
+            onValueChange={(value) => handleSliderValueChange(value)}
+            tapToSeek={true}
+          />
+        </View>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: "20%",
+          }}
+        >
+          <TouchableOpacity
+            style={styles.sideActionButtons}
+            onPress={() => {
+              translateX.value = 500;
+              nextSong();
+              translateX.value = withSpring(0);
+              xScale.value = withSpring(
+                2,
+                { stiffness: 1200, damping: 5 },
+                () => {
+                  xScale.value = withSpring(1, { stiffness: 1200, damping: 3 });
+                }
+              );
+            }}
+          >
+            <Animated.View style={animatedXStyle}>
+              <Ionicons name="close" size={30} color="#74B4AD" />
+            </Animated.View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.pauseButton}
+            onPress={() => togglePlayback()}
+          >
+            <Ionicons
+              name={paused ? "play" : "pause-outline"}
+              size={40}
+              color="#513D30"
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.sideActionButtons}
+            onPress={() => {
+              likeSong();
+              translateX.value = -500;
+              nextSong();
+              translateX.value = withSpring(0);
+              heartScale.value = withSpring(
+                2,
+                { stiffness: 1200, damping: 5 },
+                () => {
+                  heartScale.value = withSpring(1, {
+                    stiffness: 1200,
+                    damping: 3,
+                  });
+                }
+              );
+            }}
+          >
+            <Animated.View style={animatedHeartStyle}>
+              <Ionicons name="heart" size={30} color="#D2695E" />
+            </Animated.View>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1 }}></View>
       </View>
-      <View style={{ flex: 1 }}></View>
-    </View>
+    </LinearGradient>
   );
 }
 

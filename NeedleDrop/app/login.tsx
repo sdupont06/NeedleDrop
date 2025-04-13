@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Image } from "react-native";
-import * as api from '../scripts/getToken';
+// import * as api from '../scripts/getToken';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from "expo-router";
 import {
@@ -53,13 +53,11 @@ export default function LoginPage() {
   // console.log(response.params.code);
 
   useEffect(() => {
-    setLog();
-    RootLayout();
     if (response?.type == "success") {
       nav.navigate("home");
       const access_token = "BQB3Agk9CcCPtXiDuphIvH5WiTMxP-LP0KzREm96EPFWhxFBGhbKCCVQTkEM8yl6tfZDv7XkaiNu8nlpfCcDPquhoBiMxqO2vwNxkJAo4dAiO_Itv8LWZ7QEFH18duHLKBC5SuLapi8";
-      Alert.alert("Login Successful", 'Token: ' + access_token);
-      setLog();
+      Alert.alert("Login Successful");
+      // genFirstSongs();
     }
   }, [response]);
   return (

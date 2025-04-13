@@ -1,26 +1,17 @@
 import React, { useEffect } from "react";
 import { Image } from "react-native";
-import * as api from '../scripts/getToken';
-import { useNavigation } from '@react-navigation/native';
+import * as api from "../scripts/getToken";
+import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import {
-  View,
-  Text,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Alert, TouchableOpacity, StyleSheet } from "react-native";
 import * as AuthSession from "expo-auth-session";
 import RootLayout, { setLog, isLoggedIn } from "./_layout";
 
-
 const CLIENT_ID = "e3b3f9ba66c040b397b57f5d9b4da3e3";
-const REDIRECT_URI = makeRedirectUri();
-
 
 const REDIRECT_URI = AuthSession.makeRedirectUri({
   scheme: "NeedleDrop",
-  path: "127.0.0.1:8081"
+  path: "127.0.0.1:8081",
 });
 
 // console.log(REDIRECT_URI);
@@ -50,7 +41,6 @@ export default function LoginPage() {
 
       redirectUri: "exp://127.0.0.1:8081",
       responseType: "code",
-
     },
     discovery
   );
@@ -61,8 +51,9 @@ export default function LoginPage() {
     RootLayout();
     if (response?.type == "success") {
       nav.navigate("home");
-      const access_token = "BQB3Agk9CcCPtXiDuphIvH5WiTMxP-LP0KzREm96EPFWhxFBGhbKCCVQTkEM8yl6tfZDv7XkaiNu8nlpfCcDPquhoBiMxqO2vwNxkJAo4dAiO_Itv8LWZ7QEFH18duHLKBC5SuLapi8";
-      Alert.alert("Login Successful", 'Token: ' + access_token);
+      const access_token =
+        "BQB3Agk9CcCPtXiDuphIvH5WiTMxP-LP0KzREm96EPFWhxFBGhbKCCVQTkEM8yl6tfZDv7XkaiNu8nlpfCcDPquhoBiMxqO2vwNxkJAo4dAiO_Itv8LWZ7QEFH18duHLKBC5SuLapi8";
+      Alert.alert("Login Successful", "Token: " + access_token);
       setLog();
     }
   }, [response]);

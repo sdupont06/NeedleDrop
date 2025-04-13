@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Image } from "react-native";
-import * as api from "../scripts/getToken";
+// import * as api from '../scripts/getToken';
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { View, Text, Alert, TouchableOpacity, StyleSheet } from "react-native";
